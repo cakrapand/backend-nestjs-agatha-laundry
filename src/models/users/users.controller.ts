@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Param, Post, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, createUserSchema } from './dto/create-user-dto';
 import { ZodPipe } from 'src/common/pipes/validation.pipe';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('api/users')
 export class UsersController {
@@ -18,8 +27,9 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.usersService.findOneById(id);
+  @UseGuards(AuthGuard)
+  @Get('/profile')
+  async findOne(@Request() req) {
+    return await this.usersService.findOneById(req.user.id);
   }
 }
