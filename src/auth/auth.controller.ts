@@ -1,4 +1,11 @@
-import { Body, Controller, Post, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UsePipes,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ZodPipe } from 'src/common/pipes/validation.pipe';
 import { LoginDto, loginSchema } from './dto/login.dto';
@@ -7,6 +14,7 @@ import { LoginDto, loginSchema } from './dto/login.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @HttpCode(HttpStatus.OK)
   @Post('login')
   @UsePipes(new ZodPipe(loginSchema))
   async login(@Body(new ZodPipe(loginSchema)) loginDto: LoginDto) {
