@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model UserCredential {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  userProfile UserProfile?
+}
+
+model UserProfile {
+  id               String   @id @default(uuid())
+  userCredentialId String   @unique
+  name             String
+  address          String
+  phone            String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
+
+  userCredential UserCredential @relation(fields: [userCredentialId], references: [id])
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  password     String
+  name         String
+  isSuperAdmin Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+}
+
+model Service {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  price     Float
+  duration  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  Order Order[]
+}
+
+enum OrderStatus {
+  PAYMENT
+  PICKED_UP
+  ON_PROGRESS
+  ON_DELIVER
+  DONE
+  CANCEL
+}
+
+model Order {
+  id               String       @id @default(uuid())
+  userCredentialId String
+  serviceId        String
+  quantity         Float
+  transcation      Transaction?
+  redirectUrl      String       @unique
+  orderStatus      OrderStatus  @default(PAYMENT)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @default(now())
+
+  userCredential UserCredential @relation(fields: [userCredentialId], references: [id])
+  service        Service        @relation(fields: [serviceId], references: [id])
+}
+
+enum TransactionStatus {
+  PENDING
+  FAILURE
+  SUCCESS
+}
+
+model Transaction {
+  id                String            @id @default(uuid())
+  orderId           String            @unique
+  amount            Float
+  transactionStatus TransactionStatus @default(PENDING)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @default(now())
+
+  order Order @relation(fields: [orderId], references: [id])
+}
