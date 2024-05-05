@@ -21,9 +21,7 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     this.logger.info(`Register user ${createUserDto.email}`);
 
-    if (
-      await this.usersRepository.getUserCredentialByEmail(createUserDto.email)
-    )
+    if (await this.usersRepository.getUserByEmail(createUserDto.email))
       throw new BadRequestException('Email used');
 
     try {
@@ -56,14 +54,25 @@ export class UsersService {
     return await this.usersRepository.getUsers();
   }
 
-  async findOne(id: string) {
-    this.logger.info(`Getting user profile with id ${id}`);
-    const userProfile = await this.usersRepository.getUserProfileById(id);
+  async findOneById(id: string) {
+    this.logger.info(`Getting user with id ${id}`);
+    const user = await this.usersRepository.getUserById(id);
 
-    if (!userProfile) {
+    if (!user) {
       throw new NotFoundException();
     }
 
-    return userProfile;
+    return user;
+  }
+
+  async findOneByEmail(email: string) {
+    this.logger.info(`Getting user with email ${email}`);
+    const user = await this.usersRepository.getUserByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    return user;
   }
 }

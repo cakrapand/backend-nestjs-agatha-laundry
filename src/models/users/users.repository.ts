@@ -14,15 +14,17 @@ export class UsersRepository {
     });
   }
 
-  async getUserCredentialByEmail(email: string) {
+  async getUserByEmail(email: string) {
     return await this.prismaService.userCredential.findUnique({
       where: { email: email },
+      include: { userProfile: true },
     });
   }
 
-  async getUserProfileById(credentialId: string) {
-    return await this.prismaService.userProfile.findUnique({
-      where: { userCredentialId: credentialId },
+  async getUserById(credentialId: string) {
+    return await this.prismaService.userCredential.findUnique({
+      where: { id: credentialId },
+      include: { userProfile: true },
     });
   }
 
