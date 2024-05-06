@@ -4,7 +4,7 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 
 @Injectable()
-export class PrismaConfigService
+export class PrismaProviderService
   extends PrismaClient<Prisma.PrismaClientOptions, string>
   implements OnModuleInit
 {

@@ -15,4 +15,4 @@ import * as winston from 'winston';
     }),
   ],
 })
-export class LoggerConfigModule {}
+export class LoggerProviderModule {}

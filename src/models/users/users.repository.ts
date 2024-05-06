@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaConfigService } from 'src/config/prisma/config.service';
 import { IUserCredential, IUserProfile } from './interfaces/user.interface';
+import { PrismaProviderService } from 'src/provider/prisma/provider.service';
 
 @Injectable()
 export class UsersRepository {
-  constructor(private prismaService: PrismaConfigService) {}
+  constructor(private prismaService: PrismaProviderService) {}
 
   async getUsers() {
     return await this.prismaService.userCredential.findMany({

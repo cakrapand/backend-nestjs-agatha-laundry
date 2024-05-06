@@ -3,14 +3,15 @@ import {
   Controller,
   Get,
   Post,
-  Request,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, createUserSchema } from './dto/create-user-dto';
 import { ZodPipe } from 'src/common/pipes/validation.pipe';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { User } from 'src/common/decorators/user.decorator';
+import { IJwtPayload } from 'src/auth/interfaces/jwt-payload.interface';
 
 @Controller('api/users')
 export class UsersController {
@@ -29,7 +30,7 @@ export class UsersController {
 
   @UseGuards(AuthGuard)
   @Get('/profile')
-  async findOne(@Request() req) {
-    return await this.usersService.findOneById(req.user.id);
+  async findOne(@User() user: IJwtPayload) {
+    return await this.usersService.findOneById(user.id);
   }
 }
