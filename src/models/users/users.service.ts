@@ -8,8 +8,8 @@ import {
 import { UsersRepository } from './users.repository';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
-import { CreateUserDto } from './dto/create-user-dto';
 import { hashPassword } from 'src/common/helpers/hash.helper';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
