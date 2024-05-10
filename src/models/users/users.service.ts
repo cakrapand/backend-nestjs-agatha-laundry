@@ -43,7 +43,7 @@ export class UsersService {
       if (!newProfile)
         throw new InternalServerErrorException('Failed create user');
 
-      return { message: 'User created' };
+      return;
     } catch (err) {
       throw new InternalServerErrorException();
     }

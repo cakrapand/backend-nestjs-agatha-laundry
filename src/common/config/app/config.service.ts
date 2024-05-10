@@ -20,4 +20,14 @@ export class AppConfigService {
   get port(): number {
     return Number(this.configService.get<number>('app.port'));
   }
+  get accessSecretToken(): string {
+    return (
+      this.configService.get<string>('app.access_token', { infer: true }) ?? ''
+    );
+  }
+  get refreshSecretToken(): string {
+    return (
+      this.configService.get<string>('app.refresh_token', { infer: true }) ?? ''
+    );
+  }
 }
