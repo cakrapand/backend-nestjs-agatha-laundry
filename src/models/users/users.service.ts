@@ -54,9 +54,9 @@ export class UsersService {
     return await this.usersRepository.getUsers();
   }
 
-  async findOneById(id: string) {
-    this.logger.info(`Getting user with id ${id}`);
-    return await this.usersRepository.getUserById(id);
+  async findOneById(userCredentialId: string) {
+    this.logger.info(`Getting user with id ${userCredentialId}`);
+    return await this.usersRepository.getUserById(userCredentialId);
   }
 
   async findOneByEmail(email: string) {
@@ -64,8 +64,11 @@ export class UsersService {
     return await this.usersRepository.getUserByEmail(email);
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    this.logger.info(`Updating user with id ${id}`);
-    await this.usersRepository.updateUserProfile(id, updateUserDto);
+  async update(userCredentialId: string, updateUserDto: UpdateUserDto) {
+    this.logger.info(`Updating user with id ${userCredentialId}`);
+    await this.usersRepository.updateUserProfile(
+      userCredentialId,
+      updateUserDto,
+    );
   }
 }

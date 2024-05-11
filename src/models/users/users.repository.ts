@@ -22,9 +22,9 @@ export class UsersRepository {
     });
   }
 
-  async getUserById(credentialId: string) {
+  async getUserById(userCredentialId: string) {
     return await this.prismaService.userCredential.findUnique({
-      where: { id: credentialId },
+      where: { id: userCredentialId },
       include: { userProfile: true },
     });
   }
@@ -41,9 +41,12 @@ export class UsersRepository {
     });
   }
 
-  async updateUserProfile(id: string, userProfile: UpdateUserDto) {
+  async updateUserProfile(
+    userCredentialId: string,
+    userProfile: UpdateUserDto,
+  ) {
     await this.prismaService.userProfile.update({
-      where: { userCredentialId: id },
+      where: { userCredentialId: userCredentialId },
       data: { ...userProfile },
     });
   }

@@ -8,6 +8,8 @@ import { AppConfigModule } from './common/config/app/config.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { AuthGuard } from './common/guards/auth.guard';
+import { PackagesModule } from './models/packages/packages.module';
+import { ServicesModule } from './models/services/services.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { AuthGuard } from './common/guards/auth.guard';
     UsersModule,
     AuthModule,
     OrdersModule,
+    PackagesModule,
+    ServicesModule,
   ],
   providers: [
     {
