@@ -8,13 +8,13 @@ export class ServicesController {
 
   @Get()
   @ResponseMessage('OK')
-  findAll() {
-    return this.servicesService.findAll();
+  async findAll() {
+    return await this.servicesService.findAll();
   }
 
   @Get(':id')
   @ResponseMessage('OK')
-  findOne(@Param('id') id: string) {
-    return this.servicesService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.servicesService.findOne(id);
   }
 }

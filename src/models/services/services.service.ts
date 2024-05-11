@@ -10,11 +10,11 @@ export class ServicesService {
     private readonly servicesRepository: ServicesRepository,
   ) {}
 
-  findAll() {
-    return this.servicesRepository.getServices();
+  async findAll() {
+    return await this.servicesRepository.getServices();
   }
 
-  findOne(id: string) {
-    return this.servicesRepository.getServiceById(id);
+  async findOne(id: string) {
+    return await this.servicesRepository.getServiceById(id);
   }
 }

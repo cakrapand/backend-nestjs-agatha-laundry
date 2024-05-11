@@ -43,19 +43,38 @@ model Admin {
   updatedAt    DateTime @default(now())
 }
 
-model Service {
+model Package {
   id        String   @id @default(uuid())
   name      String   @unique
-  price     Float
   duration  Float
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  Order Order[]
+  PackageOnService PackageOnService[]
+}
+
+model Service {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  PackageOnService PackageOnService[]
+}
+
+model PackageOnService {
+  id          String        @id @default(uuid())
+  packageId   String
+  serviceId   String
+  price       Float
+  OrderDetail OrderDetail[]
+
+  package Package @relation(fields: [packageId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
 }
 
 enum OrderStatus {
-  PAYMENT
+  // PAYMENT
   PICKED_UP
   ON_PROGRESS
   ON_DELIVER
@@ -64,33 +83,44 @@ enum OrderStatus {
 }
 
 model Order {
-  id               String       @id @default(uuid())
+  id               String        @id @default(uuid())
   userCredentialId String
-  serviceId        String
-  quantity         Float
-  transcation      Transaction?
-  redirectUrl      String       @unique
-  orderStatus      OrderStatus  @default(PAYMENT)
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @default(now())
+  // transcation      Transaction?
+  orderDetail      OrderDetail[]
+  // redirectUrl      String        @unique
+  amount           Float         @default(0)
+  orderStatus      OrderStatus   @default(PICKED_UP)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @default(now())
 
   userCredential UserCredential @relation(fields: [userCredentialId], references: [id])
-  service        Service        @relation(fields: [serviceId], references: [id])
 }
 
-enum TransactionStatus {
-  PENDING
-  FAILURE
-  SUCCESS
+model OrderDetail {
+  id                 String   @id @default(uuid())
+  orderId            String
+  packageOnServiceId String
+  quantity           Float    @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now())
+
+  Order            Order            @relation(fields: [orderId], references: [id])
+  packageOnService PackageOnService @relation(fields: [packageOnServiceId], references: [id])
 }
 
-model Transaction {
-  id                String            @id @default(uuid())
-  orderId           String            @unique
-  amount            Float
-  transactionStatus TransactionStatus @default(PENDING)
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @default(now())
+// enum TransactionStatus {
+//   PENDING
+//   FAILURE
+//   SUCCESS
+// }
 
-  order Order @relation(fields: [orderId], references: [id])
-}
+// model Transaction {
+//   id                String            @id @default(uuid())
+//   orderId           String            @unique
+//   amount            Float
+//   transactionStatus TransactionStatus @default(PENDING)
+//   createdAt         DateTime          @default(now())
+//   updatedAt         DateTime          @default(now())
+
+//   order Order @relation(fields: [orderId], references: [id])
+// }

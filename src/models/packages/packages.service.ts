@@ -1,26 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePackageDto } from './dto/create-package.dto';
-import { UpdatePackageDto } from './dto/update-package.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import { Logger } from 'winston';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { PackagesRepository } from './packages.repository';
 
 @Injectable()
 export class PackagesService {
-  create(createPackageDto: CreatePackageDto) {
-    return 'This action adds a new package';
+  constructor(
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    private readonly packagesRepository: PackagesRepository,
+  ) {}
+
+  async findAll() {
+    return await this.packagesRepository.getPackages();
   }
 
-  findAll() {
-    return `This action returns all packages`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} package`;
-  }
-
-  update(id: number, updatePackageDto: UpdatePackageDto) {
-    return `This action updates a #${id} package`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} package`;
+  async findOne(id: string) {
+    return await this.packagesRepository.getPackageById(id);
   }
 }
