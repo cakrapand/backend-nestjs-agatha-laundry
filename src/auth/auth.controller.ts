@@ -20,6 +20,7 @@ import {
   createUserSchema,
 } from 'src/models/users/dto/create-user.dto';
 import { ResponseMessage } from 'src/common/decorators/response.decorator';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('api/auth')
 export class AuthController {
@@ -28,15 +29,16 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) {}
 
-  @HttpCode(HttpStatus.OK)
   @Post('login')
-  @UsePipes(new ZodPipe(loginSchema))
+  @Public()
+  @HttpCode(HttpStatus.OK)
   @ResponseMessage('OK')
   async login(@Body(new ZodPipe(loginSchema)) loginDto: LoginDto) {
     return await this.authService.login(loginDto);
   }
 
   @Post('/register')
+  @Public()
   @UsePipes(new ZodPipe(createUserSchema))
   @ResponseMessage('User Registered')
   @ApiCreatedResponse({

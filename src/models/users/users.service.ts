@@ -3,13 +3,13 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
 } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { hashPassword } from 'src/common/helpers/hash.helper';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -56,23 +56,16 @@ export class UsersService {
 
   async findOneById(id: string) {
     this.logger.info(`Getting user with id ${id}`);
-    const user = await this.usersRepository.getUserById(id);
-
-    if (!user) {
-      throw new NotFoundException();
-    }
-
-    return user;
+    return await this.usersRepository.getUserById(id);
   }
 
   async findOneByEmail(email: string) {
     this.logger.info(`Getting user with email ${email}`);
-    const user = await this.usersRepository.getUserByEmail(email);
+    return await this.usersRepository.getUserByEmail(email);
+  }
 
-    if (!user) {
-      throw new NotFoundException();
-    }
-
-    return user;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    this.logger.info(`Updating user with id ${id}`);
+    await this.usersRepository.updateUserProfile(id, updateUserDto);
   }
 }

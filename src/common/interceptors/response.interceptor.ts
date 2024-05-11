@@ -30,6 +30,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
             context.getHandler(),
           ) ?? '',
         data,
+        timestamp: new Date().toISOString(),
       })),
     );
   }

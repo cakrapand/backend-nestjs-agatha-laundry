@@ -8,9 +8,10 @@ export class ZodFilter<T extends ZodError> implements ExceptionFilter {
     const response = ctx.getResponse();
     const status = 400;
     response.status(status).json({
-      error: 'Bad Request',
-      message: exception.errors[0].message,
       statusCode: status,
+      message: 'Invalid Input',
+      error: exception.errors[0].message,
+      timestamp: new Date().toISOString(),
     });
   }
 }

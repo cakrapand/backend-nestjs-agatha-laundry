@@ -3,7 +3,8 @@ import { AppModule } from './app.module';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ZodFilter } from './common/exceptions/zod-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-// import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { ConfigService } from '@nestjs/config';
+import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,7 +12,7 @@ async function bootstrap() {
   const logger = app.get(WINSTON_MODULE_NEST_PROVIDER);
   app.useLogger(logger);
 
-  app.useGlobalFilters(new ZodFilter());
+  app.useGlobalFilters(new HttpExceptionFilter(), new ZodFilter());
 
   const config = new DocumentBuilder()
     .setTitle('Agatha Laundry')
@@ -22,6 +23,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(process.env.APP_PORT);
+  const configService = app.get(ConfigService);
+  await app.listen(configService.get('port'));
 }
 bootstrap();
