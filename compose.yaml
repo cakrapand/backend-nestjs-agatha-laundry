@@ -6,7 +6,7 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       APP_PORT: ${APP_PORT}
     ports:
-      - 3000:3000
+      - ${APP_PORT}:${APP_PORT}
     container_name: agatha-server
     depends_on:
       - db
@@ -15,8 +15,8 @@ services:
     restart: always
     ports:
       - 5432:5432
-    container_name: agatha-db
+    container_name: postgres-db
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=agatha_laundry
-      - POSTGRES_PASSWORD=cakra
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}

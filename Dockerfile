@@ -10,9 +10,6 @@ COPY package.json .
 # Install app dependencies
 RUN npm install
 
-# Copy prisma files
-COPY prisma ./prisma
-
 # Copy the rest of the source files into the image.
 COPY . .
 
