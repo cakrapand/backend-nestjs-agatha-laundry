@@ -19,8 +19,8 @@ jobs:
         port: 22
         script: |
           echo "Starting CD..."
-          # cd /var/www/agatha-laundry/backend-nestjs-agatha-laundry
-          # git pull origin main
-          # docker compose up --build -d
-          # npm run seed
-          # docker image prune -a -f
+          cd /var/www/agatha-laundry/backend-nestjs-agatha-laundry
+          git pull origin main
+          docker compose up --build -d
+          npm run seed
+          docker image prune -a -f
