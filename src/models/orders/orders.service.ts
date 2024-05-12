@@ -1,26 +1,69 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { OrdersRepository } from './orders.repository';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
+import { UsersService } from '../users/users.service';
+import { PackagesService } from '../packages/packages.service';
+import { IUpdateOrder, IUpdateOrderDetail } from './interfaces/order.interface';
 
 @Injectable()
 export class OrdersService {
-  create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+  constructor(
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    private readonly ordersRepository: OrdersRepository,
+    private readonly usersService: UsersService,
+    private readonly packagesService: PackagesService,
+  ) {}
+
+  async create(userCredentialId: string, createOrderDto: CreateOrderDto) {
+    //Check if user exist
+    const userCredential =
+      await this.usersService.findOneById(userCredentialId);
+    if (!userCredential) throw new BadRequestException('User not found');
+
+    //Check if packageOnService is exist
+    for (const packageOnServiceId of createOrderDto.packageOnServiceIds) {
+      const packageOnService =
+        await this.packagesService.findOne(packageOnServiceId);
+      if (!packageOnService) throw new BadRequestException('Package not found');
+    }
+
+    //Create order
+    const order = await this.ordersRepository.createOrder({ userCredentialId });
+
+    //Create detail order
+    for (const packageOnService of createOrderDto.packageOnServiceIds) {
+      await this.ordersRepository.createOrderDetail({
+        orderId: order.id,
+        packageOnServiceId: packageOnService,
+      });
+    }
   }
 
-  findAll() {
-    return `This action returns all orders`;
+  async findAll(userCredentialId: string) {
+    return this.ordersRepository.getOrders(userCredentialId);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async findOne(orderId: string) {
+    return this.ordersRepository.getOrderById(orderId);
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
+  async findOneOrderDetail(orderDetailId: string) {
+    return this.ordersRepository.getOrderDetailById(orderDetailId);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+  async updateOrder(orderId: string, newOrder: IUpdateOrder) {
+    return this.ordersRepository.updateOrderById(orderId, newOrder);
+  }
+
+  async updateOrderDetail(
+    orderDetailId: string,
+    newOrdeDetail: IUpdateOrderDetail,
+  ) {
+    return this.ordersRepository.updateOrderDetailById(
+      orderDetailId,
+      newOrdeDetail,
+    );
   }
 }

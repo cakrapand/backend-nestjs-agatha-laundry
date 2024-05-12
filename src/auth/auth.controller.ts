@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  UsePipes,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ZodPipe } from 'src/common/pipes/validation.pipe';
 import { LoginDto, loginSchema } from './dto/login.dto';
@@ -39,7 +32,6 @@ export class AuthController {
 
   @Post('/register')
   @Public()
-  @UsePipes(new ZodPipe(createUserSchema))
   @ResponseMessage('User Registered')
   @ApiCreatedResponse({
     schema: { example: { message: 'User created' } },
@@ -49,7 +41,9 @@ export class AuthController {
     description: 'Bad request invalid input type or credential used.',
   })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
-  async create(@Body() createUserDto: CreateUserDto) {
+  async create(
+    @Body(new ZodPipe(createUserSchema)) createUserDto: CreateUserDto,
+  ) {
     return await this.usersService.create(createUserDto);
   }
 }

@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('PICKED_UP', 'ON_PROGRESS', 'ON_DELIVER', 'DONE', 'CANCEL');
 
+-- CreateEnum
+CREATE TYPE "TransactionStatus" AS ENUM ('PENDING', 'FAILURE', 'SUCCESS');
+
 -- CreateTable
 CREATE TABLE "UserCredential" (
     "id" TEXT NOT NULL,
@@ -73,6 +76,7 @@ CREATE TABLE "PackageOnService" (
 CREATE TABLE "Order" (
     "id" TEXT NOT NULL,
     "userCredentialId" TEXT NOT NULL,
+    "redirectUrl" TEXT,
     "amount" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "orderStatus" "OrderStatus" NOT NULL DEFAULT 'PICKED_UP',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -93,6 +97,18 @@ CREATE TABLE "OrderDetail" (
     CONSTRAINT "OrderDetail_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Transaction" (
+    "id" TEXT NOT NULL,
+    "orderId" TEXT NOT NULL,
+    "amount" DOUBLE PRECISION NOT NULL,
+    "transactionStatus" "TransactionStatus" NOT NULL DEFAULT 'PENDING',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "UserCredential_email_key" ON "UserCredential"("email");
 
@@ -107,6 +123,12 @@ CREATE UNIQUE INDEX "Package_name_key" ON "Package"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Service_name_key" ON "Service"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Order_redirectUrl_key" ON "Order"("redirectUrl");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Transaction_orderId_key" ON "Transaction"("orderId");
 
 -- AddForeignKey
 ALTER TABLE "UserProfile" ADD CONSTRAINT "UserProfile_userCredentialId_fkey" FOREIGN KEY ("userCredentialId") REFERENCES "UserCredential"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -125,3 +147,6 @@ ALTER TABLE "OrderDetail" ADD CONSTRAINT "OrderDetail_orderId_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "OrderDetail" ADD CONSTRAINT "OrderDetail_packageOnServiceId_fkey" FOREIGN KEY ("packageOnServiceId") REFERENCES "PackageOnService"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

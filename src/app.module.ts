@@ -10,6 +10,7 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
 import { AuthGuard } from './common/guards/auth.guard';
 import { PackagesModule } from './models/packages/packages.module';
 import { ServicesModule } from './models/services/services.module';
+import { MidtransModule } from './models/midtrans/midtrans.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ServicesModule } from './models/services/services.module';
     OrdersModule,
     PackagesModule,
     ServicesModule,
+    MidtransModule,
   ],
   providers: [
     {

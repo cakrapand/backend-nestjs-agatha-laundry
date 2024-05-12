@@ -30,4 +30,18 @@ export class AppConfigService {
       this.configService.get<string>('app.refresh_token', { infer: true }) ?? ''
     );
   }
+  get midtransClientKey(): string {
+    return (
+      this.configService.get<string>('app.midtrans_client_key', {
+        infer: true,
+      }) ?? ''
+    );
+  }
+  get midtransServerKey(): string {
+    return (
+      this.configService.get<string>('app.midtrans_server_key', {
+        infer: true,
+      }) ?? ''
+    );
+  }
 }
