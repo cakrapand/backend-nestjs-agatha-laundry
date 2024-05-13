@@ -133,7 +133,7 @@ export class MidtransService {
       if (!isOrderDetailUpdated) throw new InternalServerErrorException();
     }
 
-    //Create Transactions
+    //Create Transactionss
     this.transactionsServices.create({
       orderId: chargeOrderDto.orderId,
       amount: gross_amount,
