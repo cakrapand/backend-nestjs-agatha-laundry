@@ -88,6 +88,11 @@ export class MidtransService {
         gross_amount += detail.packageOnService.price * +orderDetail.quantity;
     }
 
+    //Debug
+    console.log(chargeOrderDto);
+    console.log(this.appConfigService.midtransServerKey);
+    console.log(gross_amount);
+
     const response = await fetch(
       'https://app.sandbox.midtrans.com/snap/v1/transactions',
       {
