@@ -117,6 +117,8 @@ export class MidtransService {
 
     if (!response.ok) new HttpException(response.statusText, response.status);
     const snapToken = await response.json();
+    console.log(snapToken);
+    this.logger.info(`SnapToken here${snapToken.redirect_url}`);
 
     //Update Order.redirectUrl and Order.amount
     this.ordersServices.updateOrder(chargeOrderDto.orderId, {
