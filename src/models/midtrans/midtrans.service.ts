@@ -100,7 +100,7 @@ export class MidtransService {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization: `Basic ${Buffer.from(this.appConfigService.midtransServerKey).toString('base64')}`,
+          Authorization: `Basic ${Buffer.from('SB-Mid-server-VjBtW6XPj2X0CCbNlb1n7jF-').toString('base64')}`,
         },
         body: JSON.stringify({
           transaction_details: {
