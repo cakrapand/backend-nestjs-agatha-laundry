@@ -74,7 +74,7 @@ model PackageOnService {
 }
 
 enum OrderStatus {
-  // PAYMENT
+  PAYMENT
   PICKED_UP
   ON_PROGRESS
   ON_DELIVER

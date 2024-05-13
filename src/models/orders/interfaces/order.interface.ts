@@ -1,7 +1,14 @@
+export enum IOrderStatus {
+  PAYMENT = 'PAYMENT',
+  PICKED_UP = 'PICKED_UP',
+  ON_PROGRESS = 'ON_PROGRESS',
+  ON_DELIVER = 'ON_DELIVER',
+  DONE = 'DONE',
+  CANCEL = 'CANCEL',
+}
+
 export interface IOrder {
   userCredentialId: string;
-  amount?: number;
-  order_status?: string;
 }
 
 export interface IOrderDetail {
@@ -13,7 +20,7 @@ export interface IOrderDetail {
 export interface IUpdateOrder {
   redirectUrl?: string;
   amount?: number;
-  order_status?: string;
+  orderStatus?: IOrderStatus;
 }
 
 export interface IUpdateOrderDetail {

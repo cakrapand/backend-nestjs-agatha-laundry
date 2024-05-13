@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "OrderStatus" AS ENUM ('PICKED_UP', 'ON_PROGRESS', 'ON_DELIVER', 'DONE', 'CANCEL');
+CREATE TYPE "OrderStatus" AS ENUM ('PAYMENT', 'PICKED_UP', 'ON_PROGRESS', 'ON_DELIVER', 'DONE', 'CANCEL');
 
 -- CreateEnum
 CREATE TYPE "TransactionStatus" AS ENUM ('PENDING', 'FAILURE', 'SUCCESS');

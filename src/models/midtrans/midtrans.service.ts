@@ -11,6 +11,9 @@ import { ChargeOrderDto } from './dto/charge-order.dto';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { OrdersService } from '../orders/orders.service';
+import { TransactionsService } from '../transactions/transactions.service';
+import { TransactionStatus } from '../transactions/dto/update-transaction.dto';
+import { IOrderStatus } from '../orders/interfaces/order.interface';
 
 @Injectable()
 export class MidtransService {
@@ -18,39 +21,62 @@ export class MidtransService {
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     private readonly appConfigService: AppConfigService,
     private readonly ordersServices: OrdersService,
+    private readonly transactionsServices: TransactionsService,
   ) {}
 
   async create(midtransHandlingDto: MidtransHandlingDto) {
-    console.log('Executed================================');
+    this.logger.info(
+      `Midtrans handing ${midtransHandlingDto.order_id}, amount:${midtransHandlingDto.gross_amount}, status: ${midtransHandlingDto.transaction_status}`,
+    );
+
     try {
       if (midtransHandlingDto.transaction_status == 'capture') {
         if (midtransHandlingDto.fraud_status == 'accept') {
-          // TODO set transaction status on your database to 'success' and response with 200 OK
-          // await editTransactionStatusById(order_id, "SUCCESS");
-          // await editOrderStatusById(order_id, "PICKED_UP");
+          // Set Transactions.status on db to 'SUCCESS' and Order.status to 'ON_PROGRESS'
+          await this.transactionsServices.update(midtransHandlingDto.order_id, {
+            transactionStatus: TransactionStatus.SUCCESS,
+          });
+          await this.ordersServices.updateOrder(midtransHandlingDto.order_id, {
+            orderStatus: IOrderStatus.ON_PROGRESS,
+          });
         }
       } else if (midtransHandlingDto.transaction_status == 'settlement') {
-        // TODO set transaction status on your database to 'success' and response with 200 OK
-        // await editTransactionStatusById(order_id, 'SUCCESS');
-        // await editOrderStatusById(order_id, 'PICKED_UP');
+        // Set Transactions.status on db to 'SUCCESS' and Order.status to 'ON_PROGRESS'
+        await this.transactionsServices.update(midtransHandlingDto.order_id, {
+          transactionStatus: TransactionStatus.SUCCESS,
+        });
+        await this.ordersServices.updateOrder(midtransHandlingDto.order_id, {
+          orderStatus: IOrderStatus.ON_PROGRESS,
+        });
       } else if (
         midtransHandlingDto.transaction_status == 'cancel' ||
         midtransHandlingDto.transaction_status == 'deny' ||
         midtransHandlingDto.transaction_status == 'expire'
       ) {
-        // TODO set transaction status on your database to 'failure' and response with 200 OK
-        // await editTransactionStatusById(order_id, 'FAILURE');
-        // await editOrderStatusById(order_id, 'CANCEL');
+        // Set Transaction.status on db to 'FAILURE' and Order.status to 'CANCEL'
+        await this.transactionsServices.update(midtransHandlingDto.order_id, {
+          transactionStatus: TransactionStatus.FAILURE,
+        });
+        await this.ordersServices.updateOrder(midtransHandlingDto.order_id, {
+          orderStatus: IOrderStatus.CANCEL,
+        });
       } else if (midtransHandlingDto.transaction_status == 'pending') {
-        // TODO set transaction status on your database to 'pending' / waiting payment
-        // await createTransaction({ orderId: order_id, amount: +gross_amount });
+        // Set Transaction.status on db to 'PENDING' and create Transactions
+        await this.transactionsServices.update(midtransHandlingDto.order_id, {
+          transactionStatus: TransactionStatus.PENDING,
+        });
       }
     } catch (error: any) {
+      console.log(error);
+      this.logger.info(
+        `Midtrans fail handing ${midtransHandlingDto.order_id}, amount:${midtransHandlingDto.gross_amount}, status: ${midtransHandlingDto.transaction_status}`,
+      );
       throw new InternalServerErrorException();
     }
   }
 
   async charge(chargeOrderDto: ChargeOrderDto) {
+    this.logger.info(`Charging order ${chargeOrderDto.orderId}`);
     //Count gross amount and check if packageOnService exist
     let gross_amount = 0;
     for (const orderDetail of chargeOrderDto.orderDetails) {
@@ -106,5 +132,11 @@ export class MidtransService {
       );
       if (!isOrderDetailUpdated) throw new InternalServerErrorException();
     }
+
+    //Create Transactions
+    this.transactionsServices.create({
+      orderId: chargeOrderDto.orderId,
+      amount: gross_amount,
+    });
   }
 }
