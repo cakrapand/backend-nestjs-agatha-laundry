@@ -29,7 +29,13 @@ export class OrdersRepository {
   async getOrderById(orderId: string) {
     return await this.prismaService.order.findUnique({
       where: { id: orderId },
-      include: { orderDetail: true },
+      include: {
+        orderDetail: {
+          include: {
+            packageOnService: { include: { package: true, service: true } },
+          },
+        },
+      },
     });
   }
 
