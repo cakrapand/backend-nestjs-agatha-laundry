@@ -23,7 +23,7 @@ export class OrdersRepository {
     return await this.prismaService.order.findMany({
       where: { userCredentialId: userCredentialId },
       include: { orderDetail: true },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
