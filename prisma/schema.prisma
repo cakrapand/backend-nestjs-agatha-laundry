@@ -85,7 +85,7 @@ enum OrderStatus {
 model Order {
   id               String        @id @default(uuid())
   userCredentialId String
-  transcation      Transaction?
+  transaction      Transaction?
   orderDetail      OrderDetail[]
   redirectUrl      String?       @unique
   amount           Float         @default(0)
