@@ -88,10 +88,10 @@ export class MidtransService {
         gross_amount += detail.packageOnService.price * +orderDetail.quantity;
     }
 
-    //Debug
-    console.log(chargeOrderDto);
-    console.log(this.appConfigService.midtransServerKey);
-    console.log(gross_amount);
+    // //Debug
+    // console.log(chargeOrderDto);
+    // console.log(this.appConfigService.midtransServerKey);
+    // console.log(gross_amount);
 
     const response = await fetch(
       'https://app.sandbox.midtrans.com/snap/v1/transactions',
@@ -120,17 +120,15 @@ export class MidtransService {
       },
     );
 
-    console.log(response);
     if (!response.ok)
       throw new HttpException(response.statusText, response.status);
     const snapToken = await response.json();
-    console.log(snapToken);
-    this.logger.info(`SnapToken here${snapToken.redirect_url}`);
 
-    //Update Order.redirectUrl and Order.amount
+    //Update Order.orderStatus, Order.redirectUrl and Order.amount
     this.ordersServices.updateOrder(chargeOrderDto.orderId, {
       redirectUrl: snapToken.redirect_url,
       amount: gross_amount,
+      orderStatus: IOrderStatus.PAYMENT,
     });
 
     //Update all of order OrderDetail.quantity accordingly

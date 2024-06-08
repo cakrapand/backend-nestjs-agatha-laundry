@@ -31,6 +31,7 @@ export class OrdersRepository {
     return await this.prismaService.order.findUnique({
       where: { id: orderId },
       include: {
+        transcation: true,
         orderDetail: {
           include: {
             packageOnService: { include: { package: true, service: true } },
