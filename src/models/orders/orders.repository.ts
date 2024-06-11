@@ -27,6 +27,19 @@ export class OrdersRepository {
     });
   }
 
+  async getActiveOrders(userCredentialId: string) {
+    return await this.prismaService.order.findMany({
+      where: {
+        userCredentialId: userCredentialId,
+        orderStatus: {
+          notIn: ['CANCEL', 'DONE'],
+        },
+      },
+      include: { orderDetail: true },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   async getOrderById(orderId: string) {
     return await this.prismaService.order.findUnique({
       where: { id: orderId },

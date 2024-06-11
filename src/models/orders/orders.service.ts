@@ -45,6 +45,10 @@ export class OrdersService {
     return this.ordersRepository.getOrders(userCredentialId);
   }
 
+  async findActive(userCredentialId: string) {
+    return this.ordersRepository.getActiveOrders(userCredentialId);
+  }
+
   async findOne(orderId: string) {
     return this.ordersRepository.getOrderById(orderId);
   }
