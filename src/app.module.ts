@@ -11,7 +11,6 @@ import { AuthGuard } from './common/guards/auth.guard';
 import { PackagesModule } from './models/packages/packages.module';
 import { ServicesModule } from './models/services/services.module';
 import { MidtransModule } from './models/midtrans/midtrans.module';
-import { TransactionsModule } from './models/transactions/transactions.module';
 import { HomeModule } from './models/home/home.module';
 
 @Module({
@@ -26,7 +25,7 @@ import { HomeModule } from './models/home/home.module';
     PackagesModule,
     ServicesModule,
     MidtransModule,
-    TransactionsModule,
+    // TransactionsModule,
   ],
   providers: [
     {

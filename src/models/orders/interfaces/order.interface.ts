@@ -1,5 +1,5 @@
 export enum IOrderStatus {
-  PAYMENT = 'PAYMENT',
+  // PAYMENT = 'PAYMENT',
   PICKED_UP = 'PICKED_UP',
   ON_PROGRESS = 'ON_PROGRESS',
   ON_DELIVER = 'ON_DELIVER',

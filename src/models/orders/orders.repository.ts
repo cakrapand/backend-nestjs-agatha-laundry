@@ -3,6 +3,7 @@ import { PrismaProviderService } from 'src/provider/prisma/provider.service';
 import {
   IOrder,
   IOrderDetail,
+  IOrderStatus,
   IUpdateOrder,
   IUpdateOrderDetail,
 } from './interfaces/order.interface';
@@ -32,7 +33,7 @@ export class OrdersRepository {
       where: {
         userCredentialId: userCredentialId,
         orderStatus: {
-          notIn: ['CANCEL', 'DONE'],
+          notIn: [IOrderStatus.CANCEL, IOrderStatus.DONE],
         },
       },
       include: { orderDetail: true },
@@ -44,7 +45,7 @@ export class OrdersRepository {
     return await this.prismaService.order.findUnique({
       where: { id: orderId },
       include: {
-        transaction: true,
+        // transaction: true,
         orderDetail: {
           include: {
             packageOnService: { include: { package: true, service: true } },
