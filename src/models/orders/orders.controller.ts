@@ -13,31 +13,31 @@ export class OrdersController {
 
   @Post()
   @ResponseMessage('Order created')
-  create(
+  async create(
     @User() user: IJwtPayload,
     @Body(new ZodPipe(createOrderSchema)) createOrderDto: CreateOrderDto,
   ) {
-    return this.ordersService.create(user.id, createOrderDto);
+    return await this.ordersService.create(user.id, createOrderDto);
   }
 
   @Get()
   @ResponseMessage('OK')
-  findAll(@User() user: IJwtPayload) {
-    return this.ordersService.findAll(user.id);
+  async findAll(@User() user: IJwtPayload) {
+    return await this.ordersService.findAll(user.id);
   }
 
   @Get(':orderId')
   @ResponseMessage('OK')
-  findOne(@Param('orderId') orderId: string) {
-    return this.ordersService.findOne(orderId);
+  async findOne(@Param('orderId') orderId: string) {
+    return await this.ordersService.findOne(orderId);
   }
 
   @Patch(':orderId')
-  update(
+  async update(
     @Param('orderId') orderId: string,
     @Body(new ZodPipe(updateOrderSchema)) updateOrderDto: UpdateOrderDto,
   ) {
-    return this.ordersService.updateOrder(orderId, updateOrderDto);
+    return await this.ordersService.updateOrder(orderId, updateOrderDto);
   }
 
   // @Delete(':id')

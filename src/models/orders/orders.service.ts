@@ -1,4 +1,9 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrdersRepository } from './orders.repository';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -46,26 +51,29 @@ export class OrdersService {
   }
 
   async findActive(userCredentialId: string) {
-    return this.ordersRepository.getActiveOrders(userCredentialId);
+    return await this.ordersRepository.getActiveOrders(userCredentialId);
   }
 
   async findOne(orderId: string) {
-    return this.ordersRepository.getOrderById(orderId);
+    if (!(await this.ordersRepository.getOrderById(orderId)))
+      throw new NotFoundException('Orders not found');
+    return await this.ordersRepository.getOrderById(orderId);
   }
 
   async findOneOrderDetail(orderDetailId: string) {
-    return this.ordersRepository.getOrderDetailById(orderDetailId);
+    return await this.ordersRepository.getOrderDetailById(orderDetailId);
   }
 
   async updateOrder(orderId: string, newOrder: IUpdateOrder) {
-    return this.ordersRepository.updateOrderById(orderId, newOrder);
+    await this.findOne(orderId);
+    return await this.ordersRepository.updateOrderById(orderId, newOrder);
   }
 
   async updateOrderDetail(
     orderDetailId: string,
     newOrdeDetail: IUpdateOrderDetail,
   ) {
-    return this.ordersRepository.updateOrderDetailById(
+    return await this.ordersRepository.updateOrderDetailById(
       orderDetailId,
       newOrdeDetail,
     );
